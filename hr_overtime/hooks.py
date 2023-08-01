@@ -113,7 +113,10 @@ app_license = "MIT"
 # override_doctype_class = {
 #	"ToDo": "custom_app.overrides.CustomToDo"
 # }
-
+override_doctype_class = {
+	"Salary Slip": "hr_overtime.overrides.salary_slip.CustomSalarySlip",
+    "Timesheet": "hr_overtime.overrides.timesheet.Timesheet"
+}
 # Document Events
 # ---------------
 # Hook on document methods and events

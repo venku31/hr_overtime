@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include hr_overtime *.css
+recursive-include hr_overtime *.csv
+recursive-include hr_overtime *.html
+recursive-include hr_overtime *.ico
+recursive-include hr_overtime *.js
+recursive-include hr_overtime *.json
+recursive-include hr_overtime *.md
+recursive-include hr_overtime *.png
+recursive-include hr_overtime *.py
+recursive-include hr_overtime *.svg
+recursive-include hr_overtime *.txt
+recursive-exclude hr_overtime *.pyc

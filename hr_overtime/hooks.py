@@ -29,7 +29,8 @@ app_license = "MIT"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {"Timesheet" : "public/js/timesheet.js"
+              }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -44,7 +45,47 @@ app_license = "MIT"
 # role_home_page = {
 #	"Role": "home_page"
 # }
-
+fixtures = [
+       {
+         "dt": "Custom Field", 
+         "filters": [
+                ["name", "in", [
+                        "Salary Slip-total_overtime_hours",
+                        "Salary Slip Timesheet-overtime_hours",
+                        "Salary Slip-hourly_rate",
+                        "Salary Slip-add_rate",
+                        "Salary Slip-total_add_overtime_hours",
+                        "Salary Slip Timesheet-add_overtime_hours",
+                        "Timesheet-add_rate",
+                        "Timesheet-add_rate_overtime_hours",
+                        "Timesheet-column_break_qq0uu",
+                        "Timesheet-overtime_hours",
+                        "Payroll Settings-normal_overtime_hous",
+                        "Payroll Settings-add_rate"
+                ]
+         ]]
+},
+         {
+         "dt": "Salary Structure", 
+         "filters": [
+                ["name", "in", [
+                        "OvertimeSalaryStructure"
+                        
+                ]
+         ]]
+},
+        {
+         "dt": "Salary Component", 
+         "filters": [
+                ["name", "in", [
+                        "Overtime Salary",
+                        "Add Overtime Salary",
+                        "Basic"
+                        
+                ]
+         ]]
+}
+]
 # Generators
 # ----------
 
@@ -114,20 +155,23 @@ app_license = "MIT"
 #	"ToDo": "custom_app.overrides.CustomToDo"
 # }
 override_doctype_class = {
-	"Salary Slip": "hr_overtime.overrides.salary_slip.CustomSalarySlip",
-    "Timesheet": "hr_overtime.overrides.timesheet.Timesheet"
+	"Salary Slip": "hr_overtime.overrides.salary_slip.CustomSalarySlip"
+    # "Timesheet": "hr_overtime.overrides.timesheet.Timesheet",
 }
 # Document Events
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
+doc_events = {
 #	"*": {
 #		"on_update": "method",
 #		"on_cancel": "method",
 #		"on_trash": "method"
 #	}
-# }
+    "Timesheet": {
+		"validate": "hr_overtime.overrides.timesheet.update_timesheet_overtime",
+	}
+}
 
 # Scheduled Tasks
 # ---------------

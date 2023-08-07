@@ -39,7 +39,7 @@ class CustomSalarySlip(SalarySlip):
             # self.base_hour_rate = flt(self.hour_rate) * flt(self.exchange_rate)
             base = frappe.db.get_value("Salary Structure Assignment", {"employee":self.employee,"salary_structure":self.salary_structure,"docstatus":1}, "base")
             basic_hourly_rate = flt(base*1/self.payment_days*1/max_working_hours)
-            self.hourly_rate = flt(str(round(basic_hourly_rate, 2)))
+            self.hourly_rate = flt(str(round(basic_hourly_rate, 4)))
             self.base_hour_rate = flt(self.hour_rate) * flt(self.exchange_rate)
             self.total_working_hours = sum([d.working_hours or 0.0 for d in self.timesheets]) or 0.0
             self.total_overtime_hours = sum([d.overtime_hours or 0.0 for d in self.timesheets])
@@ -51,7 +51,7 @@ class CustomSalarySlip(SalarySlip):
 
             # self.total_add_overtime_hours = self.total_working_hours-max_working_hours-self.total_overtime_hours or 0.0 
             self.add_rate = frappe.db.get_single_value("Payroll Settings", "add_rate")
-            wages_amount = self.hourly_rate * self.total_working_hours
+            wages_amount = self.hourly_rate * (self.total_working_hours-self.total_overtime_hours-self.total_add_overtime_hours)
 
             self.add_earning_for_hourly_wages(
                 self, self._salary_structure_doc.salary_component, wages_amount
@@ -70,7 +70,7 @@ class CustomSalarySlip(SalarySlip):
             wages_row = {
                 "salary_component": salary_component,
                 "abbr": frappe.db.get_value("Salary Component", salary_component, "salary_component_abbr"),
-                "amount": self.hourly_rate * self.total_working_hours,
+                "amount": self.hourly_rate * (self.total_working_hours-self.total_overtime_hours-self.total_add_overtime_hours),
                 "default_amount": 0.0,
                 "additional_amount": 0.0,
             }
@@ -102,7 +102,7 @@ class CustomSalarySlip(SalarySlip):
                 if timesheet.working_hours:
                     self.total_working_hours += timesheet.working_hours
 
-        wages_amount = self.total_working_hours * self.hourly_rate
+        wages_amount = (self.total_working_hours-self.total_overtime_hours-self.total_add_overtime_hours) * self.hourly_rate
         self.base_hour_rate = flt(self.hourly_rate) * flt(self.exchange_rate)
         salary_component = frappe.db.get_value(
             "Salary Structure", {"name": self.salary_structure}, "salary_component"

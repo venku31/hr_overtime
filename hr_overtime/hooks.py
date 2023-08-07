@@ -84,6 +84,18 @@ fixtures = [
                         
                 ]
          ]]
+},
+{
+         "dt": "Property Setter", 
+         "filters": [
+                ["name", "in", [
+                        "Salary Slip-hour_rate-hidden",
+                        "Timesheet Detail-is_billable-default",
+                        "Salary Structure Assignment-base-allow_on_submit"
+                        
+                        
+                ]
+         ]]
 }
 ]
 # Generators

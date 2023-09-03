@@ -4,7 +4,7 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 from frappe.utils import add_to_date, flt, get_datetime, getdate, time_diff_in_hours
-
+import datetime
 from erpnext.controllers.queries import get_match_cond
 from erpnext.setup.utils import get_exchange_rate
 
@@ -40,10 +40,24 @@ from erpnext.setup.utils import get_exchange_rate
 def update_timesheet_overtime(self,method=None):
     max_working_hrs = frappe.db.get_single_value("Payroll Settings", "max_working_hours_against_timesheet")
     normal_overtime = frappe.db.get_single_value("Payroll Settings", "normal_overtime_hous")
-    if (self.total_hours-max_working_hrs) >normal_overtime :
-        self.overtime_hours = normal_overtime or 0.0
-        self.add_rate_overtime_hours = self.total_hours-max_working_hrs-normal_overtime
-    else :
-        self.overtime_hours = self.total_hours-max_working_hrs or 0.0
-        self.add_rate_overtime_hours =0.0
+    no = self.start_date.weekday()
+    print("//////",no)
+    if no > 5:
+        if (self.total_hours-max_working_hrs) >normal_overtime :
+            self.custom_sunday_overtime_hours = normal_overtime or 0.0
+            self.overtime_hours = 0.0
+            self.add_rate_overtime_hours = self.total_hours-max_working_hrs-normal_overtime
+        else :
+            self.custom_sunday_overtime_hours = self.total_hours-max_working_hrs or 0.0
+            self.overtime_hours = 0.0
+            self.add_rate_overtime_hours =0.0
+    if no < 6:
+        if (self.total_hours-max_working_hrs) >normal_overtime :
+            self.overtime_hours = normal_overtime or 0.0
+            self.custom_sunday_overtime_hours = 0.0
+            self.add_rate_overtime_hours = self.total_hours-max_working_hrs-normal_overtime
+        else :
+            self.overtime_hours = self.total_hours-max_working_hrs or 0.0
+            self.custom_sunday_overtime_hours =0.0
+            self.add_rate_overtime_hours =0.0
     self.add_rate = frappe.db.get_single_value("Payroll Settings", "add_rate")

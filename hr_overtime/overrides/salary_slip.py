@@ -23,7 +23,7 @@ class CustomSalarySlip(SalarySlip):
             ).run(as_dict=1)
 
             for data in timesheets:
-                self.append("timesheets", {"time_sheet": data.name, "working_hours": data.total_hours,"overtime_hours": data.overtime_hours,"add_overtime_hours":data.add_rate_overtime_hours})
+                self.append("timesheets", {"time_sheet": data.name, "working_hours": data.total_hours,"overtime_hours": data.overtime_hours,"custom_sunday_overtime_hours":data.custom_sunday_overtime_hours,"add_overtime_hours":data.add_rate_overtime_hours})
 
     def pull_sal_struct(self):
         from hrms.payroll.doctype.salary_structure.salary_structure import make_salary_slip
@@ -43,6 +43,7 @@ class CustomSalarySlip(SalarySlip):
             self.base_hour_rate = flt(self.hour_rate) * flt(self.exchange_rate)
             self.total_working_hours = sum([d.working_hours or 0.0 for d in self.timesheets]) or 0.0
             self.total_overtime_hours = sum([d.overtime_hours or 0.0 for d in self.timesheets])
+            self.custom_total_sunday_overtime_hours = sum([d.custom_sunday_overtime_hours or 0.0 for d in self.timesheets])
             self.total_add_overtime_hours = sum([d.add_overtime_hours or 0.0 for d in self.timesheets])
             # if (self.total_working_hours-max_working_hours)>normal_overtime :
             #     self.total_overtime_hours = normal_overtime or 0.0
@@ -51,7 +52,7 @@ class CustomSalarySlip(SalarySlip):
 
             # self.total_add_overtime_hours = self.total_working_hours-max_working_hours-self.total_overtime_hours or 0.0 
             self.add_rate = frappe.db.get_single_value("Payroll Settings", "add_rate")
-            wages_amount = self.hourly_rate * (self.total_working_hours-self.total_overtime_hours-self.total_add_overtime_hours)
+            wages_amount = self.hourly_rate * (self.total_working_hours-self.total_overtime_hours-self.custom_total_sunday_overtime_hours-self.total_add_overtime_hours)
 
             self.add_earning_for_hourly_wages(
                 self, self._salary_structure_doc.salary_component, wages_amount
@@ -70,7 +71,7 @@ class CustomSalarySlip(SalarySlip):
             wages_row = {
                 "salary_component": salary_component,
                 "abbr": frappe.db.get_value("Salary Component", salary_component, "salary_component_abbr"),
-                "amount": self.hourly_rate * (self.total_working_hours-self.total_overtime_hours-self.total_add_overtime_hours),
+                "amount": self.hourly_rate * (self.total_working_hours-self.total_overtime_hours-self.custom_total_sunday_overtime_hours-self.total_add_overtime_hours),
                 "default_amount": 0.0,
                 "additional_amount": 0.0,
             }
@@ -102,7 +103,7 @@ class CustomSalarySlip(SalarySlip):
                 if timesheet.working_hours:
                     self.total_working_hours += timesheet.working_hours
 
-        wages_amount = (self.total_working_hours-self.total_overtime_hours-self.total_add_overtime_hours) * self.hourly_rate
+        wages_amount = (self.total_working_hours-self.total_overtime_hours-self.custom_total_sunday_overtime_hours-self.total_add_overtime_hours) * self.hourly_rate
         self.base_hour_rate = flt(self.hourly_rate) * flt(self.exchange_rate)
         salary_component = frappe.db.get_value(
             "Salary Structure", {"name": self.salary_structure}, "salary_component"

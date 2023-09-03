@@ -56,12 +56,22 @@ fixtures = [
                         "Salary Slip-add_rate",
                         "Salary Slip-total_add_overtime_hours",
                         "Salary Slip Timesheet-add_overtime_hours",
+                        "Salary Slip Timesheet-custom_sunday_overtime_hours",
+                        "Salary Slip-custom_total_sunday_overtime_hours",
                         "Timesheet-add_rate",
                         "Timesheet-add_rate_overtime_hours",
                         "Timesheet-column_break_qq0uu",
                         "Timesheet-overtime_hours",
+                        "Timesheet-custom_column_break_yuhbb",
+                        "Timesheet-custom_sunday_overtime_hours",
                         "Payroll Settings-normal_overtime_hous",
-                        "Payroll Settings-add_rate"
+                        "Payroll Settings-add_rate",
+                        "Payroll Settings-custom_total_days",
+                        "Salary Structure Assignment-food_allowance",
+                        "Salary Structure Assignment-otherallowance",
+                        "Salary Structure Assignment-custom_column_break_sr0bp",
+                        "Salary Structure Assignment-custom_column_break_sr0bp"
+
                 ]
          ]]
 },
@@ -80,7 +90,10 @@ fixtures = [
                 ["name", "in", [
                         "Overtime Salary",
                         "Add Overtime Salary",
-                        "Basic"
+                        "Basic",
+                        "Sunday Overtime Salary",
+                        "Food Allowances",
+                        "Other Allowances"
                         
                 ]
          ]]
